@@ -117,6 +117,11 @@ exports.make = function(runtimeData, intents, register) {
                         return C.ERR_NOT_ENOUGH_RESOURCES;
                     }
                 }
+                if(order.resourceType == C.PIXEL) {
+                    if(order.type == C.ORDER_BUY && (runtimeData.user.pixels||0) < amount) {
+                        return C.ERR_NOT_ENOUGH_RESOURCES;
+                    }
+                }
             }
             else {
                 if(!targetRoomName) {

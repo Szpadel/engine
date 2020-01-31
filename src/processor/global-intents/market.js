@@ -97,7 +97,8 @@ module.exports = function({orders, userIntents, usersById, gameTime, roomObjects
 
 
     var ordersById = _.indexBy(orders, '_id'),
-        terminalDeals = [], directDeals = [];
+        terminalDeals = [], directDeals = [],
+        userFieldNames = {[C.SUBSCRIPTION_TOKEN]: 'subscriptionTokens',[C.PIXEL]: 'pixels'};
 
     const nowTimestamp = new Date().getTime();
 
@@ -397,10 +398,11 @@ module.exports = function({orders, userIntents, usersById, gameTime, roomObjects
 
     directDeals = _.shuffle(directDeals);
 
+    console.log(`${directDeals.length} direct deals`);
     directDeals.forEach(deal => {
 
         var order = ordersById[deal.orderId],
-            buyer, seller, userFieldNames = {[C.SUBSCRIPTION_TOKEN]: 'subscriptionTokens'};
+            buyer, seller;
 
         if(order.type == C.ORDER_SELL) {
             buyer = usersById[deal.user];
@@ -535,8 +537,8 @@ module.exports = function({orders, userIntents, usersById, gameTime, roomObjects
 
             if (order.type == C.ORDER_SELL) {
 
-                var availableResourceAmount = order.resourceType == C.SUBSCRIPTION_TOKEN ?
-                    (usersById[order.user].subscriptionTokens || 0) :
+                var availableResourceAmount = _.contains(C.INTERSHARD_RESOURCES, order.resourceType) ?
+                    (usersById[order.user][userFieldNames[order.resourceType]] || 0) :
                     terminal && terminal.user == order.user ? terminal.store[order.resourceType] || 0 : 0;
 
                 availableResourceAmount = Math.min(availableResourceAmount, order.remainingAmount);
