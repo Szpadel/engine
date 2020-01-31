@@ -157,7 +157,8 @@
             },
             market: {},
             resources: {
-                [C.SUBSCRIPTION_TOKEN]: runtimeData.user.subscriptionTokens || 0
+                [C.SUBSCRIPTION_TOKEN]: runtimeData.user.subscriptionTokens || 0,
+                [C.PIXEL]: runtimeData.user.pixels || 0
             },
             getObjectById(id) {
                 return register._objects[id] || null;
